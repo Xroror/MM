@@ -1,0 +1,93 @@
+<html>
+<head>
+<style>
+ p{
+	font-family: Courier;
+ }
+</style>
+<script>
+
+class mlogo{
+	constructor(n, m){
+		this.n = n; // size of the M letter
+		this.mnum = m; // Number of M letters to be printed
+	}
+	makearray(){ 
+		this.arr = new Array(this.n+1); 
+		for (var i = 0;i<this.arr.length;i++){ 
+			this.arr[i] = new Array(5*this.n); // declaring new arrays inside each 
+			this.arr[i].fill("-"); 
+		}
+	}
+	drawl(st){	//method for drawing the left hands 
+		if(st+this.n < this.arr[0].length){	//check if the function bellow will go out of bounds
+			var t = this.arr.length-1; 
+			var offset = st; //set the offset where the last function left of 
+			for (var g = t; g>=0;g--){ 
+				for (var i = 0;i < this.n;i++){
+					this.arr[g][i+offset] = "*"; 
+				}
+				offset++; //increase the offset by 1 to create a stair-like effect
+			}
+			this.drawr(offset-1); // call "drawr" with the offset-1 to overlap the 2 hands at the top
+		}
+	}
+	drawr(st){ // method for drawing the right hands of the M
+		if(st+this.n < this.arr[0].length){
+			var t = this.arr.length-1;
+			var offset = st; //set the offset where the last function left of 
+			for (var g = 0; g<=t;g++){ 
+				for (var i = 0;i < this.n;i++){ 
+					this.arr[g][i+offset] = "*";
+				}
+				offset++;
+			}
+			this.drawl(offset-1); //after the right hand is done call for the another left hand again with offset-1 again so they overlap perfectly at the bottom
+		}
+	}
+	print(){ 
+		var str = ""; 
+		for(var i = 0;i<this.arr.length;i++){ 
+			for(var f = 0;f<this.mnum;f++){ 
+				for (var g = 0; g<this.arr[i].length;g++){ 
+					str = str + this.arr[i][g]; // concatenate each letter at the end of the "str" string
+				}
+			}
+			str = str + "<br>"; // after each row is done, add a new line charecter to the string
+		}
+		return str; 
+	}
+}
+
+window.onload = function(){
+	document.getElementById("mwidth").addEventListener("input", main);
+	main();
+}
+
+function main(){ //make it user friendly so the console isn't needed
+ place = document.getElementById("result");
+ var input = document.getElementById("mwidth");
+ var t = parseInt(input.value);
+ if(t%2 != 0 && (t > 2 && t < 10000)){ 
+	g = new mlogo(t, 2); // create an object named g with hand width "t" and number of letters = 2
+	g.makearray(); 
+	g.drawl(0); // start drawing from the 0 index of the array(left most)
+	place.innerHTML = g.print();
+ }else if(t%2 == 0){ 
+	place.innerText = t + " should be an odd number between 2 and 10000";
+ }else{ 
+	place.innerText = "Please enter an odd number between 2 and 10000";
+ }
+
+}
+
+
+</script>
+</head>
+<body>
+<form>
+<input id = "mwidth" value = "5" placeholder = "Width of the hand" type = "text"></input>
+</form>
+<p id = "result"></p>
+</body>
+</html>
